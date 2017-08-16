@@ -1,15 +1,15 @@
 #!/bin/bash
 set -e -u -o pipefail
 
-BRANCH_NAME=${1:? "no branch name specified, usage: $0 <branch> <msg>"}
-MSG=${2:? "no message specified, usage: $0 <branch> <msg>"}
+BRANCH_NAME=${1:? "no branch name specified, usage: $0 <branch>"}
 
 command -v hub >/dev/null 2>&1 || {
     echo "You need to install hub (https://github.com/github/hub) and it must be in your path."
     exit 1
 }
 
-git commit -m "$MSG"
+MSG="$(git log -1 --pretty=%B)"
+
 git checkout -b $BRANCH_NAME
 git push origin $BRANCH_NAME:$BRANCH_NAME
 
