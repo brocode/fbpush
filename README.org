@@ -1,0 +1,26 @@
+* fbpush
+
+** Installation
+   After git clone,
+
+   #+BEGIN_SRC bash
+   sudo dotcopter dotcopter.yml apply
+   #+END_SRC
+
+   which will create a symlink in ~/usr/local/bin~
+
+** Usage
+
+   After pushing stuff in your repo, do
+
+   #+BEGIN_SRC bash
+   fbpush my-branch-name
+   #+END_SRC
+
+   This will:
+   * create a branch named ~my-branch-name~ and switch to it
+   * push that branch to the origin remote
+   * create a pull request on GitHub
+   * wait until the CI status of the ~HEAD~ becomes green (it will crash if you don't have CI set up)
+   * Open the pull request page so you can click on merge
+   * Delete the local branch and drop you back on master
