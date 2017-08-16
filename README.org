@@ -1,5 +1,11 @@
 * fbpush
 
+  Want to push some code in a cool project that has mandatory pull requests with mandatory CI set up (that rocks!)?
+  Wish you could "just push" assuming all goes well?
+  Have a huge number of repositories and want to make a small change to a lot of them?
+
+  Look no further, ~fbpush~ will automate (almost) all the pain away.
+
 ** Installation
    After git clone,
 
@@ -24,3 +30,6 @@
    * wait until the CI status of the ~HEAD~ becomes green (it will crash if you don't have CI set up)
    * Open the pull request page so you can click on merge
    * Delete the local branch and drop you back on master
+
+** Hot tips
+   Use with [[https://github.com/brocode/fw][fw foreach]] for best results (foreach supports backpressure with ~-p N)~
