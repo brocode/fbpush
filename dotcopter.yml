@@ -1,0 +1,5 @@
+---
+files: 
+  "/usr/local/bin/fbpush": 
+    src: "fbpush.sh"
+    type: LINK
