@@ -32,7 +32,7 @@ done
 
 xdg-open "$URL"
 echo "I have opened the pull request page. Please click on merge there and delete the remote branch."
-echo "\t See https://github.com/github/hub/issues/1483 for context - this can't be automated with hub yet."
+echo "     See https://github.com/github/hub/issues/1483 for context - this can't be automated with hub yet."
 
 git co master
 git branch -d $BRANCH_NAME
