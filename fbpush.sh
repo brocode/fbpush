@@ -2,7 +2,6 @@
 set -e -u -o pipefail
 
 BRANCH_NAME="fbpush-$(whoami)-$(date +%Y%m%d%H%M%S)"
-CURRENT_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 
 command -v hub >/dev/null 2>&1 || {
     echo "You need to install hub (https://github.com/github/hub) and it must be in your path."
@@ -45,6 +44,6 @@ xdg-open "$URL"
 echo "I have opened the pull request page. Please click on merge there and delete the remote branch."
 echo "     See https://github.com/github/hub/issues/1483 for context - this can't be automated with hub yet."
 
-git checkout $CURRENT_BRANCH
+git checkout master
 git remote update
 git branch -d $BRANCH_NAME
