@@ -32,6 +32,11 @@ while true; do
         continue
     }
 
+    [[ "$CI_STATUS" == "no status" ]] && {
+        echo "No status - looks like your CI server is overloaded. Will retry soon"
+        continue
+    }
+
     echo "ERROR: don't know how to deal with $CI_STATUS"
     exit 1
 done
