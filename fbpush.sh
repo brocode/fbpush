@@ -47,6 +47,9 @@ while true; do
     }
 
     echo "ERROR: don't know how to deal with $CI_STATUS"
+    echo "Please close the PR and delete the branch yourself"
+    echo "     See https://github.com/github/hub/issues/1483 for context - this can't be automated with hub yet."
+    xdg-open "$URL"
     exit 1
 done
 
