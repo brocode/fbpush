@@ -28,7 +28,7 @@ echo "Back to master"
 git checkout master
 
 while true; do
-    sleep 30
+    for i in $(seq 30); do echo -en "\e[0K\rRetrying in $(expr 30 - $i)..."; sleep 1; done
     CI_STATUS="$(hub ci-status || :)"
     echo "CI status: $CI_STATUS"
     [[ "$CI_STATUS" == "success" ]] && {
