@@ -37,12 +37,11 @@ while true; do
     }
 
     [[ "$CI_STATUS" == "pending" ]] && {
-        echo "Will retry soon"
         continue
     }
 
     [[ "$CI_STATUS" == "no status" ]] && {
-        echo "No status - looks like your CI server is overloaded. Will retry soon"
+        echo "No status yet - looks like your CI server is overloaded."
         continue
     }
 
