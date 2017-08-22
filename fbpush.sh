@@ -18,11 +18,8 @@ function cleanup() {
 }
 trap cleanup EXIT
 
+echo "Pushing branch to remote to trigger CI"
 git push origin $BRANCH_NAME:$BRANCH_NAME
-
-URL=$(hub pull-request -m "$MSG" | tr -d "\n")
-
-echo "Pull request at $URL"
 
 echo "Back to master"
 git checkout master
@@ -46,14 +43,12 @@ while true; do
     }
 
     echo "ERROR: do not know how to deal with $CI_STATUS"
-    echo "Please close the PR and delete the branch yourself"
-    echo "     See https://github.com/github/hub/issues/1483 for context - this cannot be automated with hub yet."
+    echo "Opening a PR for you to fix. Please close or fix the PR and delete the branch yourself"
+    URL=$(hub pull-request -m "$MSG" | tr -d "\n")
+    echo "Pull request at $URL"
     xdg-open "$URL"
     exit 1
 done
-
-xdg-open "$URL"
-echo "I have opened the pull request page. But I am merging and deleting the remote branch now."
 
 git push origin $BRANCH_NAME:master
 git push origin :$BRANCH_NAME
