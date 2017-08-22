@@ -53,7 +53,10 @@ while true; do
 done
 
 xdg-open "$URL"
-echo "I have opened the pull request page. Please click on merge there and delete the remote branch."
-echo "     See https://github.com/github/hub/issues/1483 for context - this cannot be automated with hub yet."
+echo "I have opened the pull request page. But I am merging and deleting the remote branch now."
+
+git push origin $BRANCH_NAME:master
+git push origin :$BRANCH_NAME
 
 git remote update
+git merge --ff-only origin/master
