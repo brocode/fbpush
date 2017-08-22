@@ -45,15 +45,15 @@ while true; do
         continue
     }
 
-    echo "ERROR: don't know how to deal with $CI_STATUS"
+    echo "ERROR: don\'t know how to deal with $CI_STATUS"
     echo "Please close the PR and delete the branch yourself"
-    echo "     See https://github.com/github/hub/issues/1483 for context - this can't be automated with hub yet."
+    echo "     See https://github.com/github/hub/issues/1483 for context - this can\'t be automated with hub yet."
     xdg-open "$URL"
     exit 1
 done
 
 xdg-open "$URL"
 echo "I have opened the pull request page. Please click on merge there and delete the remote branch."
-echo "     See https://github.com/github/hub/issues/1483 for context - this can't be automated with hub yet."
+echo "     See https://github.com/github/hub/issues/1483 for context - this can\'t be automated with hub yet."
 
 git remote update
