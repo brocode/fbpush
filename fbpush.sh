@@ -44,9 +44,11 @@ while true; do
 
     echo "ERROR: do not know how to deal with $CI_STATUS"
     echo "Opening a PR for you to fix. Please close or fix the PR and delete the branch yourself"
+    git checkout $BRANCH_NAME
     URL=$(hub pull-request -m "$MSG" | tr -d "\n")
     echo "Pull request at $URL"
     xdg-open "$URL"
+    git checkout master
     exit 1
 done
 
