@@ -11,11 +11,21 @@ command -v hub >/dev/null 2>&1 || {
 MSG="$(git log -1 --pretty=%B)"
 
 git checkout -b $BRANCH_NAME
+
+function cleanup() {
+  echo "cleaning up $BRANCH_NAME"
+  git branch -d $BRANCH_NAME
+}
+trap cleanup EXIT
+
 git push origin $BRANCH_NAME:$BRANCH_NAME
 
 URL=$(hub pull-request -m "$MSG" | tr -d "\n")
 
 echo "Pull request at $URL"
+
+echo "Back to master"
+git checkout master
 
 while true; do
     sleep 30
@@ -44,6 +54,4 @@ xdg-open "$URL"
 echo "I have opened the pull request page. Please click on merge there and delete the remote branch."
 echo "     See https://github.com/github/hub/issues/1483 for context - this can't be automated with hub yet."
 
-git checkout master
 git remote update
-git branch -d $BRANCH_NAME
