@@ -34,7 +34,7 @@ while true; do
         done
     done
     CI_STATUS="$(hub ci-status || :)"
-    echo -e "\e[0K\rCI status at $(date +:%H:%M:%S): $CI_STATUS"
+    echo -e "\e[0K\rCI status at $(date +%H:%M:%S): $CI_STATUS"
     [[ "$CI_STATUS" == "success" ]] && {
         echo "Ok to merge"
         break
