@@ -29,7 +29,7 @@ git checkout master
 while true; do
     for i in $(seq 30); do
         for char in "${progress[@]}"; do
-          echo -en "\e[0K\r$char Waiting for CI (next try in $(expr 30 - i) seconds)";
+          echo -en "\e[0K\r$char Waiting for CI (next try in $(expr 30 - $i) seconds)";
           sleep .25;
         done
     done
