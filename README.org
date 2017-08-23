@@ -1,10 +1,20 @@
 * fbpush
 
-  Want to push some code in a cool project that has mandatory pull requests with mandatory CI set up (that rocks!)?
-  Wish you could "just push" assuming all goes well?
-  Have a huge number of repositories and want to make a small change to a lot of them?
+  ~fbpush~ aims to completely automate the following workflow:
 
-  Look no further, ~fbpush~ will automate (almost) all the pain away.
+  - Pushing local work to a GitHub remote
+  - Waiting for GitHub triggered CI to become green
+  - Fast-forward merge the local work into the main remote branch (master)
+  - Clean up any leftovers
+
+  With a microservice architecture (20+, easily 100+ repositories) it's quite important to set up automated CI to avoid
+  going for YOLO whenever you pull remote changes. But at the same time getting past the CI becomes grueling work when
+  you need to change something in more than one repository (e.G. fix that nasty webpack configuration mistake in your 15 scala play repositories).
+
+  Automating the workflow for one repository opens up many possibilities:
+  - Shipping code is simply a ~fbpush~ away, no mental burden of tracking the CI job or clicking around in some UI for a pull request
+  - FAST FORWARD MERGES! Seriously damn these useless merge commits.
+  - Shipping a change in several repositories is just a ~bash~ for loop away
 
 ** Installation
    After git clone,
@@ -16,20 +26,22 @@
    which will create a symlink in ~/usr/local/bin~
 
 ** Usage
-
    After pushing stuff in your repo, do
 
    #+BEGIN_SRC bash
-   fbpush my-branch-name
+   fbpush
    #+END_SRC
 
    This will:
-   * create a branch named ~my-branch-name~ and switch to it
+   * generate a new spinoff branch and switch to it
    * push that branch to the origin remote
-   * create a pull request on GitHub
-   * wait until the CI status of the ~HEAD~ becomes green (it will crash if you don't have CI set up)
-   * Open the pull request page so you can click on merge
-   * Delete the local branch and drop you back on master
+   * switch back to master so you can continue working
+   * wait until the CI status of the spinoff branch ~HEAD~ becomes green
+   * push the spinoff branch to origin/master
+   * Delete the local branch and remote branch
+   
+  In case something blows up (e.G. CI fails) the tool will create a pull request on GitHub and point your browser at it.
+  This will allow you to investigate.
 
 ** Hot tips
    Use with [[https://github.com/brocode/fw][fw foreach]] for best results (foreach supports backpressure with ~-p N)~
