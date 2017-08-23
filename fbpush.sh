@@ -3,6 +3,8 @@ set -e -u -o pipefail
 
 BRANCH_NAME="fbpush-$(whoami)-$(date +%Y%m%d%H%M%S)"
 
+declare -a progress=("|" "/" "-" "\\")
+
 command -v hub >/dev/null 2>&1 || {
     echo "You need to install hub (https://github.com/github/hub) and it must be in your path."
     exit 1
@@ -25,9 +27,14 @@ echo "Back to master"
 git checkout master
 
 while true; do
-    for i in $(seq 30); do echo -en "\e[0K\rRetrying in $(expr 30 - $i)..."; sleep 1; done
+    for i in $(seq 30); do
+        for char in "${progress[@]}"; do
+          echo -en "\e[0K\r$char Waiting for CI";
+          sleep .25;
+        done
+    done
     CI_STATUS="$(hub ci-status || :)"
-    echo "CI status: $CI_STATUS"
+    echo -e "\e[0K\rCI status at $(date +:%H:%M:%S): $CI_STATUS"
     [[ "$CI_STATUS" == "success" ]] && {
         echo "Ok to merge"
         break
