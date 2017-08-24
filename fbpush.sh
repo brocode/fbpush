@@ -6,7 +6,8 @@ BRANCH_NAME="fbpush-$(whoami)-$(date +%Y%m%d%H%M%S)"
 declare -a progress=("⣾ " "⣽ " "⣻ " "⢿ " "⡿ " "⣟ " "⣯ " "⣷ " "⣾ " "⣽ " "⣻ " "⢿ " "⡿ " "⣟ " "⣯ " "⣷ " "◴ " "◷ " "◶ " "◵ " "◡◡" "⊙⊙"  "◠◠" "⊙⊙") # 24 ticks a .25 = 6s
 psize=${#progress[@]}
 progressloops=5
-ticks=$(expr $psize \* $progressloops)
+origticks=$(expr $psize \* $progressloops)
+ticks=$origticks
 
 command -v hub >/dev/null 2>&1 || {
     echo "You need to install hub (https://github.com/github/hub) and it must be in your path."
@@ -45,6 +46,7 @@ while true; do
         echo "Ok to merge"
         break
     }
+    ticks=$origticks
 
     [[ "$CI_STATUS" == "pending" ]] && {
         continue
