@@ -33,7 +33,7 @@ while true; do
           sleep .25;
         done
     done
-    CI_STATUS="$(hub ci-status || :)"
+    CI_STATUS="$(hub ci-status $BRANCH_NAME || :)"
     # need the extra trailing space in the string to overwrite the previous line :P
     echo -e "\e[0K\rCI status at $(date +%H:%M:%S): $CI_STATUS                                                 "
     [[ "$CI_STATUS" == "success" ]] && {
