@@ -32,8 +32,8 @@ git checkout master
 while true; do
     for i in $(seq $progressloops); do
         for char in "${progress[@]}"; do
-          ticks=$(expr $ticks - 1)
-          remainingsec=$(expr $ticks / 4)
+          ticks=$(expr $ticks - 1 || :)
+          remainingsec=$(expr $ticks / 4 || :)
           echo -en "\e[0K\r$char Waiting for CI (next try in $remainingsec)";
           sleep .25;
         done
@@ -62,6 +62,8 @@ while true; do
     echo "Pull request at $URL"
     xdg-open "$URL"
     git checkout master
+    echo "You can pwn the remote branch with this command:"
+    echo "    git push origin :$BRANCH_NAME"
     exit 1
 done
 
