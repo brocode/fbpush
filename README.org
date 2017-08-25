@@ -16,6 +16,8 @@
   - FAST FORWARD MERGES! Seriously damn these useless merge commits.
   - Shipping a change in several repositories is just a ~bash~ for loop away
 
+[[https://asciinema.org/a/UHj7EhNDPdkIercsGHhS1cb9D][[[https://asciinema.org/a/UHj7EhNDPdkIercsGHhS1cb9D.png]]]]
+
 ** Installation
    After git clone,
 
