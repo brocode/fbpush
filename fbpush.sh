@@ -70,10 +70,10 @@ while true; do
         continue
     }
 
-    bailout()
+    bailout
 done
 
-git push origin $BRANCH_NAME:master || bailout()
+git push origin $BRANCH_NAME:master || bailout
 git push origin :$BRANCH_NAME || echo "Failed to delete remote spinoff branch $BRANCH_NAME, sorry"
 
 git remote update
