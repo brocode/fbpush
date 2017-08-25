@@ -24,6 +24,19 @@ function cleanup() {
 }
 trap cleanup EXIT
 
+function bailout() {
+  echo "ERROR: do not know how to deal with $CI_STATUS"
+  echo "Opening a PR for you to fix. Please close or fix the PR and delete the branch yourself"
+  git checkout $BRANCH_NAME
+  URL=$(hub pull-request -m "$MSG" | tr -d "\n")
+  echo "Pull request at $URL"
+  xdg-open "$URL"
+  git checkout master
+  echo "You can pwn the remote branch with this command:"
+  echo "    git push origin :$BRANCH_NAME"
+  exit 1
+}
+
 echo "Pushing branch to remote to trigger CI"
 git push origin $BRANCH_NAME:$BRANCH_NAME
 
@@ -57,20 +70,11 @@ while true; do
         continue
     }
 
-    echo "ERROR: do not know how to deal with $CI_STATUS"
-    echo "Opening a PR for you to fix. Please close or fix the PR and delete the branch yourself"
-    git checkout $BRANCH_NAME
-    URL=$(hub pull-request -m "$MSG" | tr -d "\n")
-    echo "Pull request at $URL"
-    xdg-open "$URL"
-    git checkout master
-    echo "You can pwn the remote branch with this command:"
-    echo "    git push origin :$BRANCH_NAME"
-    exit 1
+    bailout()
 done
 
-git push origin $BRANCH_NAME:master
-git push origin :$BRANCH_NAME
+git push origin $BRANCH_NAME:master || bailout()
+git push origin :$BRANCH_NAME || echo "Failed to delete remote spinoff branch $BRANCH_NAME, sorry"
 
 git remote update
 git merge --ff-only origin/master
