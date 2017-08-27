@@ -1,5 +1,5 @@
 ---
 files: 
   "/usr/local/bin/fbpush": 
-    src: "fbpush.sh"
+    src: "fbpu.sh"
     type: LINK
