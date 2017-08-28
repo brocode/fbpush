@@ -3,7 +3,8 @@ set -e -u -o pipefail
 
 BRANCH_NAME="fbpush-$(whoami)-$(date +%Y%m%d%H%M%S)"
 
-declare -a progress=("⣾ " "⣽ " "⣻ " "⢿ " "⡿ " "⣟ " "⣯ " "⣷ " "⣾ " "⣽ " "⣻ " "⢿ " "⡿ " "⣟ " "⣯ " "⣷ " "◴ " "◷ " "◶ " "◵ " "◡◡" "⊙⊙"  "◠◠" "⊙⊙") # 24 ticks a .25 = 6s
+
+declare -a progress=("⣾⣿ " "⣽⣿ " "⣻⣿ " "⢿⣿ " "⡿⣿ " "⣟⣿ " "⣯⣿ " "⣷⣿ " "⣿⣾ " "⣿⣽ " "⣿⣻ " "⣿⢿ " "⣿⡿ " "⣿⣟ " "⣿⣯ " "⣿⣷ " "◴  " "◷  " "◶  " "◵  " "◡◡ " "⊙⊙ "  "◠◠ " "⊙⊙ ") # 24 ticks a .25 = 6s
 psize=${#progress[@]}
 progressloops=5
 origticks=$(expr $psize \* $progressloops)
