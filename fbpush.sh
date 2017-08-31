@@ -3,10 +3,16 @@ set -e -u -o pipefail
 
 BRANCH_NAME="fbpush-$(whoami)-$(date +%Y%m%d%H%M%S)"
 
-
-declare -a progress=("⣾⣿ " "⣽⣿ " "⣻⣿ " "⢿⣿ " "⡿⣿ " "⣟⣿ " "⣯⣿ " "⣷⣿ " "⣿⣾ " "⣿⣽ " "⣿⣻ " "⣿⢿ " "⣿⡿ " "⣿⣟ " "⣿⣯ " "⣿⣷ " "◴  " "◷  " "◶  " "◵  " "◡◡ " "⊙⊙ "  "◠◠ " "⊙⊙ ") # 24 ticks a .25 = 6s
+declare -a progress=(
+    "⣾⣿⣿⣿⣿⣿" "⣽⣿⣿⣿⣿⣿" "⣻⣿⣿⣿⣿⣿" "⢿⣿⣿⣿⣿⣿" "⡿⣿⣿⣿⣿⣿" "⣟⣿⣿⣿⣿⣿" "⣯⣿⣿⣿⣿⣿" "⣷⣿⣿⣿⣿⣿"
+    "⣿⣾⣿⣿⣿⣿" "⣿⣽⣿⣿⣿⣿" "⣿⣻⣿⣿⣿⣿" "⣿⢿⣿⣿⣿⣿" "⣿⡿⣿⣿⣿⣿" "⣿⣟⣿⣿⣿⣿" "⣿⣯⣿⣿⣿⣿" "⣿⣷⣿⣿⣿⣿"
+    "⣿⣿⣾⣿⣿⣿" "⣿⣿⣽⣿⣿⣿" "⣿⣿⣻⣿⣿⣿" "⣿⣿⢿⣿⣿⣿" "⣿⣿⡿⣿⣿⣿" "⣿⣿⣟⣿⣿⣿" "⣿⣿⣯⣿⣿⣿" "⣿⣿⣷⣿⣿⣿"
+    "⣿⣿⣿⣾⣿⣿" "⣿⣿⣿⣽⣿⣿" "⣿⣿⣿⣻⣿⣿" "⣿⣿⣿⢿⣿⣿" "⣿⣿⣿⡿⣿⣿" "⣿⣿⣿⣟⣿⣿" "⣿⣿⣿⣯⣿⣿" "⣿⣿⣿⣷⣿⣿"
+    "⣿⣿⣿⣿⣾⣿" "⣿⣿⣿⣿⣽⣿" "⣿⣿⣿⣿⣻⣿" "⣿⣿⣿⣿⢿⣿" "⣿⣿⣿⣿⡿⣿" "⣿⣿⣿⣿⣟⣿" "⣿⣿⣿⣿⣯⣿" "⣿⣿⣿⣿⣷⣿"
+    "⣿⣿⣿⣿⣿⣾" "⣿⣿⣿⣿⣿⣽" "⣿⣿⣿⣿⣿⣻" "⣿⣿⣿⣿⣿⢿" "⣿⣿⣿⣿⣿⡿" "⣿⣿⣿⣿⣿⣟" "⣿⣿⣿⣿⣿⣯" "⣿⣿⣿⣿⣿⣷"
+) # 48 ticks a .25 = 12s
 psize=${#progress[@]}
-progressloops=5
+progressloops=2
 origticks=$(expr $psize \* $progressloops)
 ticks=$origticks
 
@@ -49,7 +55,9 @@ while true; do
         for char in "${progress[@]}"; do
           ticks=$(expr $ticks - 1 || :)
           remainingsec=$(expr $ticks / 4 || :)
-          echo -en "\e[0K\r$char Waiting for CI (next try in $remainingsec)";
+          if [ -t 1 ] ; then # true if fd 1 is open and points to a term
+            echo -en "\e[0K\r$char Waiting for CI (next try in $remainingsec)";
+          fi
           sleep .25;
         done
     done
