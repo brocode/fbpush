@@ -62,7 +62,18 @@ while true; do
           ticks=$(expr $ticks - 1 || :)
           remainingsec=$(expr $ticks / 4 || :)
           if [ -t 1 ] ; then # true if fd 1 is open and points to a term
-            echo -en "\e[0K\r$char Waiting for CI (next try in $remainingsec)";
+            echo -en "\e[0K\r$char Waiting for CI "
+            if [ $(( $ticks % 4 )) -eq 0 ]; then echo -n "◡◡ "
+            else
+                if [ $(( $ticks % 4 )) -eq 1 ]; then echo -n "⊙⊙ "
+                else
+                    if [ $(( $ticks % 4 )) -eq 2 ]; then echo -n "◠◠ "
+                    else
+                      if [ $(( $ticks % 4 )) -eq 3 ]; then echo -n "⊙⊙ "
+                      fi
+                    fi
+                fi
+            fi
           fi
           sleep .25;
         done
