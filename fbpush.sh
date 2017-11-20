@@ -47,7 +47,7 @@ function bailout() {
   git checkout master
   echo "You can pwn the remote branch with this command:"
   echo "    git push origin :$BRANCH_NAME"
-  notify-send -u critical fbpush "Failed"
+  notify-send -u critical -a "fbpush" "Failed" ${PWD##*/}
   exit 1
 }
 
@@ -105,4 +105,4 @@ git push origin :$BRANCH_NAME || echo "Failed to delete remote spinoff branch $B
 
 git remote update
 git merge --ff-only origin/master
-notify-send -u normal fbpush "Done"
+notify-send -u normal -a "fbpush" "Done" ${PWD##*/}
