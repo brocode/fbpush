@@ -29,13 +29,27 @@ command -v hub >/dev/null 2>&1 || {
 
 MSG="$(git log -1 --pretty=%B)"
 
-echo "Checking for existing fbpush"
 git remote update --prune
+
+echo "Checking if your work applies as a fast forward for origin/master..."
+MISSINGREFS=$(git rev-list --left-right HEAD...origin/master | grep '>') || :
+[[ -z "$MISSINGREFS" ]] || {
+    echo "There's remote work that you do not have locally. Please rebase onto origin/master first."
+    for MISSING in $( echo $MISSINGREFS); do
+        REF=$(echo $MISSING | tr -d '>')
+        echo "  missing locally: $(git log --format=%B -n 1 $REF)"
+    done
+    exit 1
+}
+echo "✅ fast forward ok"
+
+echo "Checking for existing fbpush"
 if git branch -a | grep fbpush; then
     notify-send -u critical -a "fbpush" "Failed" ${PWD##*/}
     echo "Existing fbpush branches. (╯°□°）╯︵ ┻━┻" 1>&2
     exit 1
 fi
+echo "✅ no existing fbpush branches found, looks like you're good to go!"
 
 git checkout -b $BRANCH_NAME
 
