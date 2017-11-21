@@ -29,6 +29,14 @@ command -v hub >/dev/null 2>&1 || {
 
 MSG="$(git log -1 --pretty=%B)"
 
+echo "Checking for existing fbpush"
+git remote update --prune
+if git branch -a | grep fbpush; then
+    notify-send -u critical -a "fbpush" "Failed" ${PWD##*/}
+    echo "Existing fbpush branches. (╯°□°）╯︵ ┻━┻" 1>&2
+    exit 1
+fi
+
 git checkout -b $BRANCH_NAME
 
 function cleanup() {
