@@ -81,7 +81,7 @@ while true; do
         sleep 30 || bailout
     fi
     CI_STATUS="$(hub ci-status $BRANCH_NAME || :)"
-    LAST_STATUS="\e[0K\rLast checked at $(date +%H:%M:%S): $CI_STATUS"
+    LAST_STATUS="Last checked at $(date +%H:%M:%S): $CI_STATUS"
     [[ "$CI_STATUS" == "success" ]] && {
         echo "Ok to merge"
         break
