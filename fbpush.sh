@@ -3,24 +3,11 @@ set -e -u -o pipefail
 
 BRANCH_NAME="fbpush-$(whoami)-$(date +%Y%m%d%H%M%S)"
 
-declare -a progress=(
-    "⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿" "⣽⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿" "⣻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿" "⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿" "⡿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿" "⣟⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿" "⣯⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿" "⣷⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿"
-    "⣿⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿" "⣿⣽⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿" "⣿⣻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿" "⣿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿" "⣿⡿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿" "⣿⣟⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿" "⣿⣯⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿" "⣿⣷⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿"
-    "⣿⣿⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿" "⣿⣿⣽⣿⣿⣿⣿⣿⣿⣿⣿⣿" "⣿⣿⣻⣿⣿⣿⣿⣿⣿⣿⣿⣿" "⣿⣿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿" "⣿⣿⡿⣿⣿⣿⣿⣿⣿⣿⣿⣿" "⣿⣿⣟⣿⣿⣿⣿⣿⣿⣿⣿⣿" "⣿⣿⣯⣿⣿⣿⣿⣿⣿⣿⣿⣿" "⣿⣿⣷⣿⣿⣿⣿⣿⣿⣿⣿⣿"
-    "⣿⣿⣿⣾⣿⣿⣿⣿⣿⣿⣿⣿" "⣿⣿⣿⣽⣿⣿⣿⣿⣿⣿⣿⣿" "⣿⣿⣿⣻⣿⣿⣿⣿⣿⣿⣿⣿" "⣿⣿⣿⢿⣿⣿⣿⣿⣿⣿⣿⣿" "⣿⣿⣿⡿⣿⣿⣿⣿⣿⣿⣿⣿" "⣿⣿⣿⣟⣿⣿⣿⣿⣿⣿⣿⣿" "⣿⣿⣿⣯⣿⣿⣿⣿⣿⣿⣿⣿" "⣿⣿⣿⣷⣿⣿⣿⣿⣿⣿⣿⣿"
-    "⣿⣿⣿⣿⣾⣿⣿⣿⣿⣿⣿⣿" "⣿⣿⣿⣿⣽⣿⣿⣿⣿⣿⣿⣿" "⣿⣿⣿⣿⣻⣿⣿⣿⣿⣿⣿⣿" "⣿⣿⣿⣿⢿⣿⣿⣿⣿⣿⣿⣿" "⣿⣿⣿⣿⡿⣿⣿⣿⣿⣿⣿⣿" "⣿⣿⣿⣿⣟⣿⣿⣿⣿⣿⣿⣿" "⣿⣿⣿⣿⣯⣿⣿⣿⣿⣿⣿⣿" "⣿⣿⣿⣿⣷⣿⣿⣿⣿⣿⣿⣿"
-    "⣿⣿⣿⣿⣿⣾⣿⣿⣿⣿⣿⣿" "⣿⣿⣿⣿⣿⣽⣿⣿⣿⣿⣿⣿" "⣿⣿⣿⣿⣿⣻⣿⣿⣿⣿⣿⣿" "⣿⣿⣿⣿⣿⢿⣿⣿⣿⣿⣿⣿" "⣿⣿⣿⣿⣿⡿⣿⣿⣿⣿⣿⣿" "⣿⣿⣿⣿⣿⣟⣿⣿⣿⣿⣿⣿" "⣿⣿⣿⣿⣿⣯⣿⣿⣿⣿⣿⣿" "⣿⣿⣿⣿⣿⣷⣿⣿⣿⣿⣿⣿"
-    "⣿⣿⣿⣿⣿⣿⣾⣿⣿⣿⣿⣿" "⣿⣿⣿⣿⣿⣿⣽⣿⣿⣿⣿⣿" "⣿⣿⣿⣿⣿⣿⣻⣿⣿⣿⣿⣿" "⣿⣿⣿⣿⣿⣿⢿⣿⣿⣿⣿⣿" "⣿⣿⣿⣿⣿⣿⡿⣿⣿⣿⣿⣿" "⣿⣿⣿⣿⣿⣿⣟⣿⣿⣿⣿⣿" "⣿⣿⣿⣿⣿⣿⣯⣿⣿⣿⣿⣿" "⣿⣿⣿⣿⣿⣿⣷⣿⣿⣿⣿⣿"
-    "⣿⣿⣿⣿⣿⣿⣿⣾⣿⣿⣿⣿" "⣿⣿⣿⣿⣿⣿⣿⣽⣿⣿⣿⣿" "⣿⣿⣿⣿⣿⣿⣿⣻⣿⣿⣿⣿" "⣿⣿⣿⣿⣿⣿⣿⢿⣿⣿⣿⣿" "⣿⣿⣿⣿⣿⣿⣿⡿⣿⣿⣿⣿" "⣿⣿⣿⣿⣿⣿⣿⣟⣿⣿⣿⣿" "⣿⣿⣿⣿⣿⣿⣿⣯⣿⣿⣿⣿" "⣿⣿⣿⣿⣿⣿⣿⣷⣿⣿⣿⣿"
-    "⣿⣿⣿⣿⣿⣿⣿⣿⣾⣿⣿⣿" "⣿⣿⣿⣿⣿⣿⣿⣿⣽⣿⣿⣿" "⣿⣿⣿⣿⣿⣿⣿⣿⣻⣿⣿⣿" "⣿⣿⣿⣿⣿⣿⣿⣿⢿⣿⣿⣿" "⣿⣿⣿⣿⣿⣿⣿⣿⡿⣿⣿⣿" "⣿⣿⣿⣿⣿⣿⣿⣿⣟⣿⣿⣿" "⣿⣿⣿⣿⣿⣿⣿⣿⣯⣿⣿⣿" "⣿⣿⣿⣿⣿⣿⣿⣿⣷⣿⣿⣿"
-    "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣾⣿⣿" "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣽⣿⣿" "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣻⣿⣿" "⣿⣿⣿⣿⣿⣿⣿⣿⣿⢿⣿⣿" "⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⣿⣿" "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣟⣿⣿" "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣯⣿⣿" "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣿⣿"
-    "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣾⣿" "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣽⣿" "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣻⣿" "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢿⣿" "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⣿" "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣟⣿" "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣯⣿" "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣿"
-    "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣾" "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣽" "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣻" "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢿" "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿" "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣟" "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣯" "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷"
-) # 96 ticks a .25 = 24s
-psize=${#progress[@]}
-progressloops=1
-origticks=$(expr $psize \* $progressloops)
-ticks=$origticks
+command -v goat > /dev/null 2>&1 || {
+    echo "goat not found in PATH. Please install from https://github.com/brocode/goat"
+    exit 1
+}
+
 
 command -v hub >/dev/null 2>&1 || {
     echo "You need to install hub (https://github.com/github/hub) and it must be in your path."
@@ -49,6 +36,7 @@ if git branch -a | grep fbpush; then
     echo "Existing fbpush branches. (╯°□°）╯︵ ┻━┻" 1>&2
     exit 1
 fi
+
 echo "✅ no existing fbpush branches found, looks like you're good to go!"
 
 git checkout -b $BRANCH_NAME
@@ -73,6 +61,9 @@ function bailout() {
   exit 1
 }
 
+PRISTINE_TITLE="Waiting for next CI check on $BRANCH_NAME."
+LAST_STATUS=""
+
 echo "Pushing branch to remote to trigger CI"
 git push origin $BRANCH_NAME:$BRANCH_NAME
 
@@ -80,42 +71,23 @@ echo "Back to master"
 git checkout master
 
 while true; do
-    for i in $(seq $progressloops); do
-        for char in "${progress[@]}"; do
-          ticks=$(expr $ticks - 1 || :)
-          remainingsec=$(expr $ticks / 4 || :)
-          if [ -t 1 ] ; then # true if fd 1 is open and points to a term
-            echo -en "\e[0K\r$char Waiting for CI "
-            if [ $(( $ticks % 4 )) -eq 0 ]; then echo -n "◡◡ "
-            else
-                if [ $(( $ticks % 4 )) -eq 1 ]; then echo -n "⊙⊙ "
-                else
-                    if [ $(( $ticks % 4 )) -eq 2 ]; then echo -n "◠◠ "
-                    else
-                      if [ $(( $ticks % 4 )) -eq 3 ]; then echo -n "⊙⊙ "
-                      fi
-                    fi
-                fi
-            fi
-          fi
-          sleep .25;
-        done
-    done
+    goat --time=30 --title="$PRISTINE_TITLE. $LAST_STATUS" || {
+        CI_STATUS="<canceled by you>"
+        bailout
+    }
     CI_STATUS="$(hub ci-status $BRANCH_NAME || :)"
-    # need the extra trailing space in the string to overwrite the previous line :P
-    echo -e "\e[0K\rCI status at $(date +%H:%M:%S): $CI_STATUS                                                 "
+    LAST_STATUS="\e[0K\rLast checked at $(date +%H:%M:%S): $CI_STATUS"
     [[ "$CI_STATUS" == "success" ]] && {
         echo "Ok to merge"
         break
     }
-    ticks=$origticks
 
     [[ "$CI_STATUS" == "pending" ]] && {
         continue
     }
 
     [[ "$CI_STATUS" == "no status" ]] && {
-        echo "No status yet - looks like your CI server is overloaded."
+        LAST_STATUS="No status yet - looks like your CI server is overloaded."
         continue
     }
 
