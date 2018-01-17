@@ -4,7 +4,7 @@ set -e -u -o pipefail
 BRANCH_NAME="fbpush-$(whoami)-$(date +%Y%m%d%H%M%S)"
 
 command -v goat > /dev/null 2>&1 || {
-    echo "goat not found in PATH. Please install from https://github.com/brocode/goat"
+    echo "goat not found in PATH. Please install from https://github.com/brocode/goat. For now you can download the binary here: https://github.com/brocode/goat/releases/download/0.0.1/goat-linux-amd64"
     exit 1
 }
 
