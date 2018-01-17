@@ -71,10 +71,15 @@ echo "Back to master"
 git checkout master
 
 while true; do
-    goat --time=30 --title="$PRISTINE_TITLE. $LAST_STATUS" || {
+    if [ -t 1 ] ; then # true if fd 1 is open and points to a term
+      goat --time=30 --title="$PRISTINE_TITLE. $LAST_STATUS" || {
         CI_STATUS="<canceled by you>"
         bailout
-    }
+      }
+    else
+        echo "$PRISTINE_TITLE. $LAST_STATUS"
+        sleep 30 || bailout
+    fi
     CI_STATUS="$(hub ci-status $BRANCH_NAME || :)"
     LAST_STATUS="\e[0K\rLast checked at $(date +%H:%M:%S): $CI_STATUS"
     [[ "$CI_STATUS" == "success" ]] && {
