@@ -42,23 +42,23 @@ echo "✅ no existing fbpush branches found, looks like you're good to go!"
 git checkout -b $BRANCH_NAME
 
 function cleanup() {
-  echo "cleaning up $BRANCH_NAME"
-  git branch -d $BRANCH_NAME
+    echo "cleaning up $BRANCH_NAME"
+    git branch -d $BRANCH_NAME
 }
 trap cleanup EXIT
 
 function bailout() {
-  echo "ERROR: do not know how to deal with $CI_STATUS"
-  echo "Opening a PR for you to fix. Please close or fix the PR and delete the branch yourself"
-  git checkout $BRANCH_NAME
-  URL=$(hub pull-request -m "$MSG" | tr -d "\n")
-  echo "Pull request at $URL"
-  xdg-open "$URL"
-  git checkout master
-  echo "You can pwn the remote branch with this command:"
-  echo "    git push origin :$BRANCH_NAME"
-  notify-send -u critical -a "fbpush" "Failed" ${PWD##*/}
-  exit 1
+    echo "ERROR: do not know how to deal with $CI_STATUS"
+    echo "Opening a PR for you to fix. Please close or fix the PR and delete the branch yourself"
+    git checkout $BRANCH_NAME
+    URL=$(hub pull-request -m "$MSG" | tr -d "\n")
+    echo "Pull request at $URL"
+    xdg-open "$URL"
+    git checkout master
+    echo "You can pwn the remote branch with this command:"
+    echo "    git push origin :$BRANCH_NAME"
+    notify-send -u critical -a "fbpush" "Failed" ${PWD##*/}
+    exit 1
 }
 
 PRISTINE_TITLE="Waiting for next CI check on $BRANCH_NAME."
@@ -72,10 +72,10 @@ git checkout master
 
 while true; do
     if [ -t 1 ] ; then # true if fd 1 is open and points to a term
-      goat --time=30 --title="$PRISTINE_TITLE. $LAST_STATUS" || {
-        CI_STATUS="<canceled by you>"
-        bailout
-      }
+        goat --time=30 --title="$PRISTINE_TITLE. $LAST_STATUS" || {
+            CI_STATUS="<canceled by you>"
+            bailout
+        }
     else
         echo "$PRISTINE_TITLE. $LAST_STATUS"
         sleep 30 || bailout
