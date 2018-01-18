@@ -47,6 +47,13 @@ function cleanup() {
 }
 trap cleanup EXIT
 
+function bailoutArmageddon() {
+    echo "Nuking everything, as per your command"
+    git push origin :$BRANCH_NAME
+    notify-send -u critical -a "fbpush" "AMAR-GEDDON" ${PWD##*/}
+    exit 1
+}
+
 function bailout() {
     echo "ERROR: do not know how to deal with $CI_STATUS"
     echo "Opening a PR for you to fix. Please close or fix the PR and delete the branch yourself"
@@ -72,10 +79,17 @@ git checkout master
 
 while true; do
     if [ -t 1 ] ; then # true if fd 1 is open and points to a term
-        goat --time=30 --title="$PRISTINE_TITLE. $LAST_STATUS" || {
+        set +e
+        goat --time=30 --title="$PRISTINE_TITLE. $LAST_STATUS" -m "64:a:AMAR-GEDDON - destroy local and remote branch and quit"
+        RETCODE=$?
+        set -e
+        if [ $RETCODE -eq 1 ]; then
             CI_STATUS="<canceled by you>"
             bailout
-        }
+        fi
+        if [ $RETCODE -eq 64 ]; then
+            bailoutArmageddon
+        fi
     else
         echo "$PRISTINE_TITLE. $LAST_STATUS"
         sleep 30 || bailout
