@@ -16,19 +16,23 @@ command -v hub >/dev/null 2>&1 || {
 
 MSG="$(git log -1 --pretty=%B)"
 
-git remote update --prune
+function sanityCheck(){
+  git remote update --prune
 
-echo "Checking if your work applies as a fast forward for origin/master..."
-MISSINGREFS=$(git rev-list --left-right HEAD...origin/master | grep '>') || :
-[[ -z "$MISSINGREFS" ]] || {
-    echo "There's remote work that you do not have locally. Please rebase onto origin/master first."
-    for MISSING in $( echo $MISSINGREFS); do
-        REF=$(echo $MISSING | tr -d '>')
-        echo "  missing locally: $(git log --format=%B -n 1 $REF)"
-    done
-    exit 1
+  echo "Checking if your work applies as a fast forward for origin/master..."
+  MISSINGREFS=$(git rev-list --left-right HEAD...origin/master | grep '>') || :
+  [[ -z "$MISSINGREFS" ]] || {
+      echo "There's remote work that you do not have locally. Please rebase onto origin/master first."
+      for MISSING in $( echo $MISSINGREFS); do
+          REF=$(echo $MISSING | tr -d '>')
+          echo "  missing locally: $(git log --format=%B -n 1 $REF)"
+      done
+      exit 1
+  }
+  echo "✅ fast forward ok"
 }
-echo "✅ fast forward ok"
+
+sanityCheck
 
 echo "Checking for existing fbpush"
 if git branch -a | grep fbpush; then
@@ -68,6 +72,15 @@ function bailout() {
     exit 1
 }
 
+function hotReplace() {
+    sanityCheck
+    git branch -D $BRANCH_NAME
+    git checkout -b $BRANCH_NAME
+    git push --force origin $BRANCH_NAME:$BRANCH_NAME
+    git checkout master
+    LAST_STATUS="no status"
+}
+
 PRISTINE_TITLE="Waiting for next CI check on $BRANCH_NAME."
 LAST_STATUS=""
 
@@ -80,7 +93,7 @@ git checkout master
 while true; do
     if [ -t 1 ] ; then # true if fd 1 is open and points to a term
         set +e
-        goat --time=30 --title="$PRISTINE_TITLE. $LAST_STATUS" -m "64:a:AMAR-GEDDON - destroy local and remote branch and quit"
+        goat --time=30 --title="$PRISTINE_TITLE. $LAST_STATUS" -m "64:a:AMAR-GEDDON - destroy local and remote branch and quit" -m "65:r:Hot replace - forcepush current head into the fbpush branch and wait for that instead"
         RETCODE=$?
         set -e
         if [ $RETCODE -eq 1 ]; then
@@ -89,6 +102,9 @@ while true; do
         fi
         if [ $RETCODE -eq 64 ]; then
             bailoutArmageddon
+        fi
+        if [ $RETCODE -eq 65 ]; then
+            hotReplace
         fi
     else
         echo "$PRISTINE_TITLE. $LAST_STATUS"
