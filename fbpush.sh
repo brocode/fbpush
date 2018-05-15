@@ -81,6 +81,10 @@ function hotReplace() {
     LAST_STATUS="no status"
 }
 
+function openCIJob() {
+    hub ci-status $BRANCH_NAME -v | cut -d " " -f2  | xargs xdg-open || :
+}
+
 PRISTINE_TITLE="Waiting for next CI check on $BRANCH_NAME."
 LAST_STATUS=""
 
@@ -93,7 +97,7 @@ git checkout master
 while true; do
     if [ -t 1 ] ; then # true if fd 1 is open and points to a term
         set +e
-        goat --time=30 --title="$PRISTINE_TITLE. $LAST_STATUS" -m "64:a:AMAR-GEDDON - destroy local and remote branch and quit" -m "65:r:Hot replace - forcepush current head into the fbpush branch and wait for that instead"
+        goat --time=30 --title="$PRISTINE_TITLE. $LAST_STATUS" -m "64:a:AMAR-GEDDON - destroy local and remote branch and quit" -m "65:r:Hot replace - forcepush current head into the fbpush branch and wait for that instead" -m "66:j:Job - ✨NEW✨ Browse CI job"
         RETCODE=$?
         set -e
         if [ $RETCODE -eq 1 ]; then
@@ -105,6 +109,9 @@ while true; do
         fi
         if [ $RETCODE -eq 65 ]; then
             hotReplace
+        fi
+        if [ $RETCODE -eq 66 ]; then
+            openCIJob
         fi
     else
         echo "$PRISTINE_TITLE. $LAST_STATUS"
