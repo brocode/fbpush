@@ -29,7 +29,7 @@ function sanityCheck(){
       done
       exit 1
   }
-  echo "✅ fast forward ok"
+  echo "✔ fast forward ok"
 }
 
 sanityCheck
@@ -41,7 +41,7 @@ if git branch -a | grep fbpush; then
     exit 1
 fi
 
-echo "✅ no existing fbpush branches found, looks like you're good to go!"
+echo "✔ no existing fbpush branches found, looks like you're good to go!"
 
 git checkout -b $BRANCH_NAME
 
