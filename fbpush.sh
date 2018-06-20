@@ -97,7 +97,7 @@ git checkout master
 while true; do
     if [ -t 1 ] ; then # true if fd 1 is open and points to a term
         set +e
-        goat --time=30 --title="$PRISTINE_TITLE. $LAST_STATUS" -m "64:a:AMAR-GEDDON - destroy local and remote branch and quit" -m "65:r:Hot replace - forcepush current head into the fbpush branch and wait for that instead" -m "66:j:Job - ✨NEW✨ Browse CI job"
+        goat --time=30 --title="$PRISTINE_TITLE. $LAST_STATUS" -m "64:a:AMAR-GEDDON - destroy local and remote branch and quit" -m "65:r:Hot replace - forcepush current head into the fbpush branch and wait for that instead" -m "66:j:Job - ★ NEW ★ Browse CI job"
         RETCODE=$?
         set -e
         if [ $RETCODE -eq 1 ]; then
