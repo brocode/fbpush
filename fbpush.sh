@@ -82,7 +82,7 @@ function hotReplace() {
 }
 
 function openCIJob() {
-    hub ci-status $BRANCH_NAME -v | cut -d " " -f2  | xargs xdg-open || :
+    hub ci-status -v | awk '{ print $NF }' | xargs xdg-open || :
 }
 
 PRISTINE_TITLE="Waiting for next CI check on $BRANCH_NAME."
