@@ -85,7 +85,8 @@ function openCIJob() {
     hub ci-status -v | awk '{ print $NF }' | xargs xdg-open || :
 }
 
-PRISTINE_TITLE="Waiting for next CI check on $BRANCH_NAME."
+PROJECT=$(basename "$PWD")
+PRISTINE_TITLE="$PROJECT - Waiting for next CI check on $BRANCH_NAME."
 LAST_STATUS=""
 
 echo "Pushing branch to remote to trigger CI"
