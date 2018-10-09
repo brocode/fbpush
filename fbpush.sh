@@ -43,7 +43,12 @@ fi
 
 echo "✔ no existing fbpush branches found, looks like you're good to go!"
 
-git checkout -b $BRANCH_NAME
+BRANCH_NAME2="$(git rev-parse --abbrev-ref HEAD)"
+if [ "$@" == "join" ] && [ "$BRANCH_NAME2" != "master" ]; then
+    BRANCH_NAME="$BRANCH_NAME2"
+else
+  git checkout -b $BRANCH_NAME
+fi
 
 function cleanup() {
     echo "cleaning up $BRANCH_NAME"
