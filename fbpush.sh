@@ -3,6 +3,7 @@ set -e -u -o pipefail
 
 BRANCH_NAME="fbpush-$(whoami)-$(date +%Y%m%d%H%M%S)"
 
+
 command -v goat > /dev/null 2>&1 || {
     echo "goat not found in PATH. Please install from https://github.com/brocode/goat. For now you can download the binary here: https://github.com/brocode/goat/releases"
     exit 1
@@ -15,6 +16,7 @@ command -v hub >/dev/null 2>&1 || {
 }
 
 MSG="$(git log -1 --pretty=%B)"
+
 
 function sanityCheck(){
   git remote update --prune
@@ -32,23 +34,54 @@ function sanityCheck(){
   echo "✔ fast forward ok"
 }
 
+
 sanityCheck
 
+# find out number of branches
+# look only for remotes
 echo "Checking for existing fbpush"
-if git branch -a | grep fbpush; then
+
+set +e
+NUM_BRANCHES="$(git branch -a | grep origin/fbpush -c || 0 )"
+OLD_BRANCHNAME="$(git branch -a | grep origin/fbpush | awk -F "/" '{print $NF}' | head -1)"
+set -e
+
+JOIN_BRANCH=false
+
+if [ $NUM_BRANCHES -gt 1 ]; then
     notify-send -u critical -a "fbpush" "Failed" ${PWD##*/}
-    echo "Existing fbpush branches. (╯°□°）╯︵ ┻━┻" 1>&2
+    echo "Too many existing fbpush branches. (╯°□°）╯︵ ┻━┻" 1>&2
     exit 1
-fi
-
-echo "✔ no existing fbpush branches found, looks like you're good to go!"
-
-BRANCH_NAME2="$(git rev-parse --abbrev-ref HEAD)"
-if [ "$@" == "join" ] && [ "$BRANCH_NAME2" != "master" ]; then
-    BRANCH_NAME="$BRANCH_NAME2"
+elif [ $NUM_BRANCHES -gt 0 ]; then
+    # read input
+    while true; do
+        read -p "Existing fbpush branch. Wanna join? (y/n)" yn
+        case $yn in
+            [Yy]* )
+              JOIN_BRANCH=true
+            break;;
+            [Nn]* ) exit;;
+            * ) echo "Please answer yes or no.";;
+        esac
+    done
 else
-  git checkout -b $BRANCH_NAME
+    echo "✔ no existing fbpush branches found, looks like you're good to go!"
 fi
+
+
+CURRENT_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+if [[ "$@" = "attach" ]] && [["$CURRENT_BRANCH" != "master"]] && [[ $JOIN_BRANCH == "false" ]]; then  # no fbpush branch
+    BRANCH_NAME="$CURRENT_BRANCH"
+elif [[ $JOIN_BRANCH = "true" ]]; then        # push on existing fbpush
+    echo "Join fbpush branches"
+    git checkout -b $BRANCH_NAME
+    git remote update
+    git rebase $BRANCH_NAME origin/$OLD_BRANCHNAME
+    git push origin $BRANCH_NAME:$BRANCH_NAME
+else        # create new fbpush branch
+    git checkout -b $BRANCH_NAME
+fi
+
 
 function cleanup() {
     echo "cleaning up $BRANCH_NAME"
