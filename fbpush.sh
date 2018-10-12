@@ -70,7 +70,7 @@ fi
 
 
 CURRENT_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
-if [[ "$@" = "attach" ]] && [["$CURRENT_BRANCH" != "master"]] && [[ $JOIN_BRANCH == "false" ]]; then  # no fbpush branch
+if [[ "$@" = "attach" ]] && [[ "$CURRENT_BRANCH" != "master" ]] && [[ $JOIN_BRANCH == "false" ]]; then  # no fbpush branch
     BRANCH_NAME="$CURRENT_BRANCH"
 elif [[ $JOIN_BRANCH = "true" ]]; then        # push on existing fbpush
     echo "Join fbpush branches"
