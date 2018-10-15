@@ -42,7 +42,7 @@ sanityCheck
 echo "Checking for existing fbpush"
 
 set +e
-NUM_BRANCHES="$(git branch -a | grep origin/fbpush -c || 0 )"
+NUM_BRANCHES="$(git branch -a | grep origin/fbpush -c)" || :
 OLD_BRANCHNAME="$(git branch -a | grep origin/fbpush | awk -F "/" '{print $NF}' | head -1)"
 set -e
 
