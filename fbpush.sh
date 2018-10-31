@@ -76,7 +76,7 @@ elif [[ $JOIN_BRANCH = "true" ]]; then        # push on existing fbpush
     echo "Join fbpush branches"
     git checkout -b $BRANCH_NAME
     git remote update
-    git rebase $BRANCH_NAME origin/$OLD_BRANCHNAME
+    git rebase origin/$OLD_BRANCHNAME
     git push origin $BRANCH_NAME:$BRANCH_NAME
 else        # create new fbpush branch
     git checkout -b $BRANCH_NAME
@@ -179,5 +179,9 @@ git push origin $BRANCH_NAME:master || bailout
 git push origin :$BRANCH_NAME || echo "Failed to delete remote spinoff branch $BRANCH_NAME, sorry"
 
 git remote update
-git merge --ff-only origin/master
+if [[ $JOIN_BRANCH = "true" ]]; then
+  git reset --hard origin/master
+else
+  git merge --ff-only origin/master
+fi
 notify-send -u normal -a "fbpush" "Done" ${PWD##*/}
