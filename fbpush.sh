@@ -120,7 +120,7 @@ function hotReplace() {
 }
 
 function openCIJob() {
-    hub ci-status -v | awk '{ print $NF }' | xargs xdg-open || :
+    hub ci-status $BRANCH_NAME -v | awk '{ print $NF }' | xargs xdg-open || :
 }
 
 PROJECT=$(basename "$PWD")
