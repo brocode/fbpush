@@ -55,7 +55,8 @@ if [ $NUM_BRANCHES -gt 1 ]; then
 elif [ $NUM_BRANCHES -gt 0 ]; then
     # read input
     while true; do
-        read -p "Existing fbpush branch. Wanna join? (y/n)" yn
+	git branch -a | grep origin/fbpush
+        read -p "Existing fbpush branch. If the branch list contains one of your own branches, you should not join! This will rebase your branch onto the other person's branch. Please be sure you want to do this. Wanna join? (y/n)" yn
         case $yn in
             [Yy]* )
               JOIN_BRANCH=true
