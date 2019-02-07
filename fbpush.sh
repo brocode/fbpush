@@ -15,6 +15,35 @@ command -v hub >/dev/null 2>&1 || {
     exit 1
 }
 
+#  check where hub config is if it exists
+#  either if XDG_CONFIG_HOME or XDG_CONFIG_DIRS or standard directory
+
+HUB_PATH="$HOME/.config/hub"
+
+if [ -v XDG_CONFIG_HOME ]; then
+    HUB_PATH="$XDG_CONFIG_HOME/hub"
+    if [ ! -e $XDG_CONFIG_HOME ]; then
+        echo "Hub directory $XDG_CONFIG_HOME does not exist"
+        exit 1
+    fi
+elif [ -v XDG_CONFIG_DIRS ]; then
+    for path in ${XDG_CONFIG_DIRS//:/ }; do
+        if [ -e $path ]; then
+            if [ -e "$path/hub" ]; then
+                HUB_PATH="$path/hub"
+            fi
+            break
+        fi
+    done
+fi
+
+if [ ! -e "$HUB_PATH" ]; then
+    echo "Hub config file $HUB_PATH does not exist"
+    exit 1
+fi
+
+
+
 MSG="$(git log -1 --pretty=%B)"
 
 
