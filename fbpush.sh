@@ -19,23 +19,30 @@ command -v hub >/dev/null 2>&1 || {
 #  either if XDG_CONFIG_HOME or XDG_CONFIG_DIRS or standard directory
 
 HUB_PATH="$HOME/.config/hub"
+HAS_HUB=false
 
 if [ -v XDG_CONFIG_HOME ]; then
     HUB_PATH="$XDG_CONFIG_HOME/hub"
     if [ ! -e $XDG_CONFIG_HOME ]; then
         echo "Hub directory $XDG_CONFIG_HOME does not exist"
-        exit 1
+    else
+        HAS_HUB=true
     fi
-elif [ -v XDG_CONFIG_DIRS ]; then
-    for path in ${XDG_CONFIG_DIRS//:/ }; do
-        if [ -e $path ]; then
-            if [ -e "$path/hub" ]; then
-                HUB_PATH="$path/hub"
-            fi
-            break
-        fi
-    done
 fi
+
+if [[ $HAS_HUB == "false" ]]; then
+    if [ -v XDG_CONFIG_DIRS ]; then
+        for path in ${XDG_CONFIG_DIRS//:/ }; do
+            if [ -e $path ]; then
+                if [ -e "$path/hub" ]; then
+                    HUB_PATH="$path/hub"
+                    break
+                fi
+            fi
+        done
+    fi
+fi
+
 
 if [ ! -e "$HUB_PATH" ]; then
     echo "Hub config file $HUB_PATH does not exist"
