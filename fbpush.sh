@@ -49,6 +49,18 @@ if [ ! -e "$HUB_PATH" ]; then
     exit 1
 fi
 
+# check if token is valid
+# hub api user would be better
+
+set +e
+hub issue labels >> /dev/null
+
+if [ $? -eq 1 ]; then
+    echo "Wrong hub authentification token!"
+    exit 1
+fi
+
+set -e
 
 
 MSG="$(git log -1 --pretty=%B)"
