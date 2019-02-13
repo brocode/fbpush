@@ -17,17 +17,14 @@ command -v hub >/dev/null 2>&1 || {
 
 
 # check if token is valid
-# hub api user would be better
+# hub api user would be better, only works at hub version 2.8.3
 
-set +e
-hub issue labels >> /dev/null
-
-if [ $? -eq 1 ]; then
-    echo "Wrong hub authentification token!"
+hub issue labels >> /dev/null || {
+    echo "Hub does not work, please check your configuration!"
     exit 1
-fi
+}
 
-set -e
+
 
 
 MSG="$(git log -1 --pretty=%B)"
