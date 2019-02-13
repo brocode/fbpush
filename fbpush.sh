@@ -15,6 +15,18 @@ command -v hub >/dev/null 2>&1 || {
     exit 1
 }
 
+
+# check if token is valid
+# hub api user would be better, only works at hub version 2.8.3
+
+hub issue labels >> /dev/null || {
+    echo "Hub does not work, please check your configuration!"
+    exit 1
+}
+
+
+
+
 MSG="$(git log -1 --pretty=%B)"
 
 
