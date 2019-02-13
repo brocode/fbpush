@@ -1,7 +1,5 @@
 * fbpush
 
-[[https://asciinema.org/a/UHj7EhNDPdkIercsGHhS1cb9D][https://asciinema.org/a/UHj7EhNDPdkIercsGHhS1cb9D.png]]
-
   ~fbpush~ aims to completely automate the following workflow:
 
   - Pushing local work to a GitHub remote
